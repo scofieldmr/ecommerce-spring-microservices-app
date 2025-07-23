@@ -59,7 +59,7 @@ public class TestOrderService {
 
         when(orderRepository.save(ArgumentMatchers.any(Orders.class))).thenReturn(savedOrder);
 
-        OrderResponse orderResponse = new OrderResponse(savedOrder.getOrderNumber(),savedOrder.getSkuCode(),"Order Placed Successfully");
+        OrderResponse orderResponse = new OrderResponse(savedOrder.getOrderNumber(),savedOrder.getSkuCode(),new BigDecimal(1.0),"Order Placed Successfully");
 
         OrderResponse result = orderService.placeOrder(orderRequest);
 

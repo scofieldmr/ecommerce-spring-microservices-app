@@ -14,20 +14,25 @@ public interface InventoryClient {
 
     static Logger log = LoggerFactory.getLogger(InventoryClient.class);
 
-    @GetExchange("/api/v1/inventory/stockAvailable/{sku_code}/{quantity}")
-    @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod")
+    @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod1")
     @Retry(name = "inventory")
+    @GetExchange("/api/v1/inventory/stockAvailable/{sku_code}/{quantity}")
     boolean isStockAvailable(@PathVariable("sku_code") String sku_code,
-                             @PathVariable("quantity") int quantity);
-
-    @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod")
+                             @PathVariable("quantity") Integer quantity);
+    @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod2")
     @Retry(name = "inventory")
     @PostExchange("/api/v1/inventory/updateInventoryStock/{sku_code}/{quantity}")
     InventoryUpdatedResponse updateInventoryStock(@PathVariable("sku_code") String sku_code,
-                             @PathVariable("quantity") int quantity);
+                             @PathVariable("quantity") Integer quantity);
 
-    default boolean fallbackMethod(String code, Integer quantity, Throwable throwable) {
-        log.info("Cannot get inventory for skucode {}, failure reason: {}", code, throwable.getMessage());
+
+    default boolean fallbackMethod1(String sku_Code, Integer quantity, Throwable throwable) {
+        log.info("Cannot get inventory for skucode {}, failure reason: {}", sku_Code, throwable.getMessage());
         return false;
+
     }
+        default boolean fallbackMethod2(String sku_Code, Integer quantity, Throwable throwable) {
+        log.info("Cannot get inventory for skucode {}, failure reason: {}", sku_Code, throwable.getMessage());
+        return false;
+  }
 }
